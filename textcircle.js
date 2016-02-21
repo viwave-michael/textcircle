@@ -16,7 +16,8 @@ if (Meteor.isClient) {
     config: function() {
       return function(editor) {
         editor.on("change", function(editor, info) {
-          console.log(editor.getValue());
+          var code = editor.getValue()
+          $("#viewer_iframe").contents().find("html").html(code);
         });
       }
     }
