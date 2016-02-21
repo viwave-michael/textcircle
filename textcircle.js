@@ -11,6 +11,14 @@ if (Meteor.isClient) {
       } else {
         return undefined;
       }
+    },
+
+    config: function() {
+      return function(editor) {
+        editor.on("change", function(editor, info) {
+          console.log(editor.getValue());
+        });
+      }
     }
   });
 }
