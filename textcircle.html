@@ -10,10 +10,21 @@
   </nav>
 
   <div class="container top-margin">
-  {{> editor}}
+    <div class="row">
+      <div class="col-md-6">
+        {{> editor}}
+      </div>
+      <div class="col-md-6">
+        {{> viewer}}
+      </div>
+    </div><!-- /.row -->
   </div><!-- /.container -->
 </body>
 
 <template name="editor">
   {{>sharejsCM docid=docid id="editor"}}
+</template>
+
+<template name="viewer">
+  preview goes here...
 </template>
