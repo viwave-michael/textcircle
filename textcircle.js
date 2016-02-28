@@ -15,6 +15,8 @@ if (Meteor.isClient) {
 
     config: function() {
       return function(editor) {
+        editor.setOption("lineNumbers", true);
+        editor.setOption("mode", "html");
         editor.on("change", function(editor, info) {
           var code = editor.getValue()
           $("#viewer_iframe").contents().find("html").html(code);
