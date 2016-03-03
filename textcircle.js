@@ -17,6 +17,7 @@ if (Meteor.isClient) {
       return function(editor) {
         editor.setOption("lineNumbers", true);
         editor.setOption("mode", "html");
+        editor.setOption("theme", "yeti");
         editor.on("change", function(editor, info) {
           var code = editor.getValue()
           $("#viewer_iframe").contents().find("html").html(code);
@@ -44,6 +45,22 @@ if (Meteor.isClient) {
         i++;
       }
       return users;
+    }
+  });
+
+  ////////////
+  // EVENTS
+  ////////////
+
+  Template.navbar.events({
+    "click .js-add-doc": function(event) {
+      event.preventDefault();
+      console.log('add document');
+      if (!Meteor.user()) {
+        alert("You need to login first!");
+      } else {
+        Meteor.call("addDoc");
+      }
     }
   });
 } // end of isClient
@@ -88,6 +105,19 @@ Meteor.methods({
     user.lastEdit = new Date();
     editingUsers.users[this.userId] = user
     EditingUsers.upsert({_id: editingUsers._id}, editingUsers);
+  },
+  addDoc: function() {
+    var doc;
+    if (!this.userId) {
+      console.log("No login user found!");
+      return;
+    } else {
+      doc = {
+        owner: this.userId, createdOn: new Date(),
+        title: "New Document"
+      };
+      Document.insert(doc);
+    }
   }
 });
 
