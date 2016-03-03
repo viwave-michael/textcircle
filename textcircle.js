@@ -2,22 +2,18 @@ this.Documents = new Mongo.Collection("documents");
 EditingUsers = new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
-
+  
   Template.editor.helpers({
     docid: function() {
-      var doc = Documents.findOne();
-      if (doc) {
-        return Documents.findOne()._id;
-      } else {
-        return undefined;
-      }
+      setupCurrentDocument();
+      return Session.get('docid');
     },
 
     config: function() {
       return function(editor) {
         editor.setOption("lineNumbers", true);
         editor.setOption("mode", "html");
-        editor.setOption("theme", "yeti");
+        editor.setOption("theme", "material");
         editor.on("change", function(editor, info) {
           var code = editor.getValue()
           $("#viewer_iframe").contents().find("html").html(code);
@@ -128,4 +124,14 @@ function fixObjectKey(obj) {
     newObj[key2] = obj[key];
   }
   return newObj;
+}
+
+function setupCurrentDocument() {
+  var doc;
+  if (!Session.get('docid')) {
+    doc = Documents.findOne();
+    if (doc) {
+      Session.set('docid', doc._id);
+    }
+  }
 }
