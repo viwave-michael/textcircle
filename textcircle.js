@@ -2,7 +2,13 @@ this.Documents = new Mongo.Collection("documents");
 EditingUsers = new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
-  
+
+  Template.navbar.helpers({
+    documents: function() {
+      return Documents.find();
+    }
+  });
+
   Template.editor.helpers({
     docid: function() {
       setupCurrentDocument();
@@ -13,7 +19,7 @@ if (Meteor.isClient) {
       return function(editor) {
         editor.setOption("lineNumbers", true);
         editor.setOption("mode", "html");
-        editor.setOption("theme", "material");
+        editor.setOption("theme", "elegant");
         editor.on("change", function(editor, info) {
           var code = editor.getValue()
           $("#viewer_iframe").contents().find("html").html(code);
@@ -55,7 +61,14 @@ if (Meteor.isClient) {
       if (!Meteor.user()) {
         alert("You need to login first!");
       } else {
-        Meteor.call("addDoc");
+        Meteor.call("addDoc", function(err, id) {
+          if (!err) {
+            console.log('addDoc returns id: ' + id);
+            Session.set('docid', id);
+          } else {
+            console.log('addDoc err: ' + err);
+          }
+        });
       }
     }
   });
@@ -112,7 +125,9 @@ Meteor.methods({
         owner: this.userId, createdOn: new Date(),
         title: "New Document"
       };
-      Document.insert(doc);
+      var res = Documents.insert(doc);
+      console.log("addDoc insert result: " + res);
+      return res;
     }
   }
 });
