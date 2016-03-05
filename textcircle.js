@@ -50,6 +50,12 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.docMeta.helpers({
+    document: function() {
+      return Documents.findOne({_id: Session.get('docid')});
+    }
+  });
+
   ////////////
   // EVENTS
   ////////////
@@ -70,6 +76,11 @@ if (Meteor.isClient) {
           }
         });
       }
+    },
+    "click .js-load-doc": function(event) {
+      // this is a document.
+      console.log(this);
+      Session.set('docid', this._id);
     }
   });
 } // end of isClient

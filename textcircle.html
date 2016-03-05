@@ -6,6 +6,13 @@
   {{> navbar }}
 
   <div class="container top-margin">
+
+    <div class="row">
+      <div class="col-md-12">
+        {{> docMeta}}
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-md-12">
         {{> editingUsers}}
@@ -67,4 +74,10 @@
   {{#each users}}
   <span class="label label-success">{{first_name}}</span>
   {{/each}}
+</template>
+
+<template name="docMeta">
+  {{#with document}}
+  <span class="h1">{{title}}</span>
+  {{/with}}
 </template>
