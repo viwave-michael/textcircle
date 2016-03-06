@@ -3,6 +3,9 @@ EditingUsers = new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
 
+  Meteor.subscribe('documents');
+  Meteor.subscribe('editingUsers');
+
   Template.navbar.helpers({
     documents: function() {
       return Documents.find();
@@ -57,13 +60,16 @@ if (Meteor.isClient) {
   });
 
   Template.editableText.helpers({
-    userCanEdit: function(doc, collection) {
-      doc = Documents.findOne({_id: Session.get('docid'), owner: Meteor.userId});
+    userCanEdit: function() {
+      console.log('docid: ' + Session.get('docid'));
+      console.log('userId: ' + Meteor.userId());
+      doc = Documents.findOne({_id: Session.get('docid')});
       if (doc) {
-        return true;
-      } else {
-        return false;
+        if (doc.owner == Meteor.userId()) {
+          return true;
+        }
       }
+      return false;
     }
   });
 
@@ -110,6 +116,14 @@ if (Meteor.isServer) {
       Documents.insert({title: "New document"});
     }
   });
+
+  Meteor.publish('documents', function() {
+    return Documents.find({is_private: false});
+  });
+
+  Meteor.publish('editingUsers', function() {
+    return EditingUsers.find();
+  });
 }
 
 Meteor.methods({
@@ -153,7 +167,8 @@ Meteor.methods({
     } else {
       doc = {
         owner: this.userId, createdOn: new Date(),
-        title: "New Document"
+        title: "New Document",
+        is_private: false
       };
       var res = Documents.insert(doc);
       console.log("addDoc insert result: " + res);
