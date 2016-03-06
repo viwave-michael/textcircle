@@ -56,6 +56,17 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.editableText.helpers({
+    userCanEdit: function(doc, collection) {
+      doc = Documents.findOne({_id: Session.get('docid'), owner: Meteor.userId});
+      if (doc) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
+
   ////////////
   // EVENTS
   ////////////
@@ -81,6 +92,14 @@ if (Meteor.isClient) {
       // this is a document.
       console.log(this);
       Session.set('docid', this._id);
+    }
+  });
+
+  Template.docMeta.events({
+    "click .js-toggle-private": function(event) {
+      console.log(event.target.checked);
+      var doc = { _id: Session.get('docid'), is_private: event.target.checked };
+      Meteor.call('updateDocPrivacy', doc);
     }
   });
 } // end of isClient
@@ -139,6 +158,17 @@ Meteor.methods({
       var res = Documents.insert(doc);
       console.log("addDoc insert result: " + res);
       return res;
+    }
+  },
+  updateDocPrivacy: function(_doc) {
+    console.log('updateDocPrivacy');
+    console.log(_doc);
+    var doc = Documents.findOne({_id: _doc._id, owner: this.userId});
+    if (doc) {
+      doc.is_private = _doc.is_private;
+      Documents.update({_id: doc._id}, doc);
+    } else {
+      console.warn("Cannot find document or you are not the owner");
     }
   }
 });

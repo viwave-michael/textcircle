@@ -78,6 +78,12 @@
 
 <template name="docMeta">
   {{#with document}}
-  <span class="h1">{{title}}</span>
+  <span class="h1">{{> editableText collection="documents" field="title" }}</span>
   {{/with}}
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" class="js-toggle-private">Private Doc
+    </label>
+  </div>
 </template>
