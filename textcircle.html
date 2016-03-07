@@ -79,11 +79,14 @@
 <template name="docMeta">
   {{#with document}}
   <span class="h1">{{> editableText collection="documents" field="title" }}</span>
-  {{/with}}
 
+  {{#if canEdit}}
   <div class="checkbox">
     <label>
       <input type="checkbox" class="js-toggle-private">Private Doc
     </label>
   </div>
+  {{/if}}
+
+  {{/with}}
 </template>
